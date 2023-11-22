@@ -158,8 +158,9 @@ class ExperimentBuilder(nn.Module):
         for name, value in named_parameters:
             if value.requires_grad and "bias" not in name:
                 parts = name.split(".")
-                name = parts[1] + "_" + parts[3]
-                layers.append(name)
+                filter = [part for part in parts if part not in ["layer_dict", "weight"]]
+                layer = "_".join(filter)
+                layers.append(layer)
                 if value.grad is not None:
                     all_grads.append(value.grad.abs().mean().item())
                 else:
